@@ -1,1 +1,2 @@
-Simple docker running a c++ file that was configured using CMAKE and Conan2
+Simple docker compiling and running a simple HTTP server\br 
+The c++ file was configured using CMAKE and Conan2
