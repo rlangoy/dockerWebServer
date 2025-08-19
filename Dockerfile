@@ -1,28 +1,40 @@
 # Stage 1: Build
 FROM debian:bookworm as build
 
-# Install build tools
-RUN apt-get update && apt-get install -y cmake g++ make && rm -rf /var/lib/apt/lists/*
+# Install build tools and Python
+RUN apt-get update && apt-get install -y \
+    g++ cmake make python3 python3-venv git wget unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a Python venv for Conan
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install conan==2.* \
+    && ln -s /opt/venv/bin/conan /usr/local/bin/conan
+
+ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
 # Copy project files
+COPY conanfile.txt .
 COPY CMakeLists.txt .
 COPY src/ src/
 
-# Build project
-RUN cmake -B build -S . && cmake --build build --config Release
+# Configure Conan
 
-# Stage 2: Runtime (slim)
+RUN conan profile detect --force  \
+    && conan install . --build=missing \
+    && cmake --preset=conan-release \
+    && cmake --build --preset=conan-release
+
+# Stage 2: Runtime
 FROM debian:bookworm-slim
 
 WORKDIR /app
 
-# Copy the compiled binary
-COPY --from=build /app/build/webserver .
+COPY --from=build /app/webserver webserver
 
-# Expose port
 EXPOSE 8080
 
-# Run server
 CMD ["./webserver"]
