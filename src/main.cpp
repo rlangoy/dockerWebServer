@@ -1,9 +1,13 @@
+#include <fmt/core.h>
+#include <fmt/color.h>
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+
+ 
 
 int main() {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,7 +33,8 @@ int main() {
         return 1;
     }
 
-    std::cout << "Server running on port 8080...\n";
+    fmt::print("Server running on port {} ... !\n", 8080);
+
     while (true) {
         int new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
         if (new_socket < 0) {
