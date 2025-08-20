@@ -4,8 +4,17 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <spdlog/spdlog.h>
 
+// syslog on windows/linux/osx/freebsd
+#ifdef _WIN32
+    #include "spdlog/sinks/win_eventlog_sink.h"   
+#else
+    #include "spdlog/sinks/syslog_sink.h"   
+#endif
+
+
 #include <iostream>
 #include <string>
+
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -13,8 +22,15 @@ namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
 int main() {
-    // Set log level (debug, info, warn, error, critical, off)
-    spdlog::set_level(spdlog::level::warn);
+    
+    //System evelog log messages
+    auto eventlog_sink = std::make_shared<spdlog::sinks::win_eventlog_sink_mt>("spdlog-example");
+    auto eventlog_logger = std::make_shared<spdlog::logger>("eventlog", eventlog_sink);
+    spdlog::register_logger(eventlog_logger);
+    eventlog_logger->warn("This is a warning that will end up in Windows/Linx Event Log.");
+
+    // Set log level (trace,debug, info, warn, error, critical, off)
+    spdlog::set_level(spdlog::level::trace);
 
     try {
         net::io_context ioc;
