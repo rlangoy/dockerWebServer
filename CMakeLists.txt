@@ -10,9 +10,9 @@ find_package(Boost REQUIRED COMPONENTS system)
 # Find fmt
 find_package(fmt REQUIRED)
 
-add_executable(beast_server beast_cpp_webserver.cpp)
+add_executable(cpp_webserver src/main.cpp)
 
-target_link_libraries(beast_server
+target_link_libraries(cpp_webserver
     PRIVATE Boost::system
     PRIVATE fmt::fmt
 )
