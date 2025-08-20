@@ -23,7 +23,7 @@ int main() {
         tcp::acceptor acceptor{ioc, {tcp::v4(), 8080}};
         std::cout << "Server running at http://localhost:8080\n";
 
-        for (;;) {
+        while(true) {
             tcp::socket socket{ioc};
             acceptor.accept(socket);
 
