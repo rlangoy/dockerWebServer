@@ -1,8 +1,10 @@
 [requires]
-fmt/11.2.0
+spdlog/1.15.3
 boost/1.88.0
+
 [generators]
 CMakeDeps
 CMakeToolchain
+
 [layout]
 cmake_layout
