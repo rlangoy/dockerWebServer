@@ -23,17 +23,17 @@ COPY src/ src/
 
 # Configure Conan
 
-RUN conan profile detect --force  \
-    && conan install . --build=missing \
-    && cmake --preset=conan-release \
-    && cmake --build --preset=conan-release
+RUN conan profile detect --force  
+RUN conan install . --build=missing 
+RUN cmake --preset=conan-release 
+RUN cmake --build --preset=conan-release
 
 # Stage 2: Runtime
 FROM debian:bookworm-slim
 
 WORKDIR /app
 
-COPY --from=build /app/webserver webserver
+COPY --from=build  /app/build/Release/webserver webserver
 
 EXPOSE 8080
 
