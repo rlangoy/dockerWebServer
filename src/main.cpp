@@ -33,7 +33,7 @@ int main() {
                 http::status::ok, req.version()};
             res.set(http::field::server, "Beast");
             res.set(http::field::content_type, "text/html");
-            res.body() = "<h1>Hello from Boost.Beast 🚀</h1>";
+            res.body() = "<h1>Hello World </h1>";  
             res.prepare_payload();
 
             http::write(socket, res);
