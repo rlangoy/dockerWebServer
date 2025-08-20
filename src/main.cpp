@@ -24,10 +24,14 @@ using tcp = net::ip::tcp;
 int main() {
     
     //System evelog log messages
-    auto eventlog_sink = std::make_shared<spdlog::sinks::win_eventlog_sink_mt>("spdlog-example");
-    auto eventlog_logger = std::make_shared<spdlog::logger>("eventlog", eventlog_sink);
-    spdlog::register_logger(eventlog_logger);
-    eventlog_logger->warn("This is a warning that will end up in Windows/Linx Event Log.");
+    #ifdef _WIN32
+        #include "spdlog/sinks/win_eventlog_sink.h"
+        auto eventlog_sink = std::make_shared<spdlog::sinks::win_eventlog_sink_mt>("spdlog-example");
+        auto eventlog_logger = std::make_shared<spdlog::logger>("eventlog", eventlog_sink);
+        spdlog::register_logger(eventlog_logger);
+        eventlog_logger->warn("This is a warning that will end up in Windows/Linx Event Log.");
+    #endif
+ 
 
     // Set log level (trace,debug, info, warn, error, critical, off)
     spdlog::set_level(spdlog::level::trace);
